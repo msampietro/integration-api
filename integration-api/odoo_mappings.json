@@ -1,0 +1,18 @@
+{
+  "titulo":"name",
+  "nombre_contacto":"contact_name",
+  "nombre_cliente":"partner_name",
+  "descripcion":"description",
+  "ocupacion":"function",
+  "calle1":"street",
+  "calle2":"street2",
+  "celular":"mobile",
+  "telefono":"phone",
+  "email":"email_from",
+  "ciudad":"city",
+  "fax":"fax",
+  "page_id":"page_id",
+  "page_name":"page_name",
+  "variant":"variant",
+  "ip":"ip"
+}
