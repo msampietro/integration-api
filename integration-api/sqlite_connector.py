@@ -26,7 +26,8 @@ def new_client(company, db, user_lead):
                 c.execute(insert_query, client)
                 conn.commit()
                 message = build_response('Cliente almacenado con exito!', 200)
-            message = build_response('Error en los datos, verificar formato de usuario_lead y db', 400)
+            else:
+                message = build_response('Error en los datos, verificar formato de MAIL y BASE DE DATOS', 400)
     except sqlite3.Error as sqe:
         message = build_response('Error al intentar almacenar el cliente, es posible que alguno de los datos especificados ya exista', 400)
         LOG.error('Sqlite Error al insertar ' + str(sqe))

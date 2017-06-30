@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Modulo de Integracion</title>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/new_client.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>var csrf_token = "{{ csrf_token() }}"</script>
+
+</head>
+
+<body>
+  <div class="container">  
+  <form id="register_client" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <h3>Modulo de Integracion</h3>
+    <h4>Registrar un nuevo cliente</h4>
+    <fieldset>
+      <input id='empresa' placeholder="Empresa" type="text" tabindex="1" required autofocus>
+    </fieldset>
+    <fieldset>
+      <input id='db' placeholder="Nombre de base de datos (ya creada en Odoo)" type="text" tabindex="2" required>
+    </fieldset>
+    <fieldset>
+      <input id='usuario_lead' placeholder="Email destino de los leads" type="email" tabindex="3" required>
+    </fieldset>
+    <fieldset>
+      <button name="submit" type="button" id="register-submit" data-submit="...Sending">Guardar</button>
+    </fieldset>
+      <strong><p id="response" class="copyright"></p></strong>
+  </form>
+</div>
+  
+  
+</body>
+</html>

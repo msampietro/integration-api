@@ -12,8 +12,12 @@ URL_REGEX = '#/\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)
 CLIENTS_TABLE = 'configurations'
 XMLRPC_OBJECT = '{}/xmlrpc/2/object'
 SECRET_KEY = '$0627=j55we6m#lqj5zmiryt3jmnt(#nua5*o&f6-l)dt#u&ro'
-'''---CONSTANTS---'''
+OPERATION_CREATE = 'create'
+ODOO_TABLE = 'crm.lead'
 
+
+'''---CONSTANTS---'''
+PAGE_NAME = 'page_name'
 EMPRESA_KEY = 'empresa'
 DB_KEY = 'db'
 USUARIO_LEAD_KEY = 'usuario_lead'

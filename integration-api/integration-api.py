@@ -1,10 +1,13 @@
 from flask import Flask, request, render_template
 from application_properties import *
-from sqlite_connector import new_client, get_database
-from odoo_connector import odoo_connect
 from utils import build_response
 import logging as LOG
 from flask_wtf import CSRFProtect
+
+from sqlite_connector import new_client, sqlite_connect, get_database
+from odoo_connector import odoo_connect, odoo_insert
+import json
+
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -30,11 +33,33 @@ def create_client():
 
 @app.route('/new_lead', methods=['POST'])
 def insert_lead():
-    page_name = request.form.get('page_name')
-    odoo_connection = odoo_connect(get_database(page_name.lower()))
-    return str(odoo_connection)
+    json = request.get_json()
+    page_name = json[PAGE_NAME]
 
+    odooJson = transformToOdooJson(json)
+    odoo_insertion = odoo_insert(get_database(page_name.lower()), odooJson, page_name)
+    return str(odoo_insertion)
 
+def transformToOdooJson(json):
+    for key, values in json.copy().items():
+        k = getOdooKey(key)
+        if k != None:
+            if k == key:
+                json[k] = json[key]
+            else:
+                json[k] = json[key]
+                del json[key]
+        else:
+            del json[key]
+    return json
+
+def getOdooKey(formKey):
+    with open('./odoo_mappings.json') as json_data:
+        odooMapping = json.load(json_data)
+
+    for key, values in odooMapping.items():
+        if formKey == key:
+            return values
 
 if __name__ == '__main__':
     app.run()
