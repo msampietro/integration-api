@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from application_properties import *
 from sqlite_connector import new_client, sqlite_connect, get_database
-from odoo_connector import odoo_connect
+from odoo_connector import odoo_connect, odoo_insert
 import json
 
 app = Flask(__name__)
@@ -26,10 +26,11 @@ def insert_lead():
     page_name = request.json.get('page_name')
     odoo_connection = odoo_connect(get_database(page_name.lower()))
     json = request.get_json()
-    print(json)
+    #print(json)
     odooJson = transformToOdooJson(json)
-    print(odooJson)
-    return str(odoo_connection)
+    #print(odooJson)
+    odoo_insertion = odoo_insert(get_database(page_name.lower()), odooJson)
+    return str(odoo_insertion)
 
 def transformToOdooJson(json):
     for key, values in json.copy().items():
