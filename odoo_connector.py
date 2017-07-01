@@ -8,7 +8,7 @@ LOG = logging.getLogger(__name__)
 def odoo_connect(db):
     try:
         if db is not None and db and isinstance(db, str):
-            odoo = xmlrpc.client.ServerProxy(XMLRPC_OBJECT.format(ODOO_SERVER))
+            odoo = xmlrpc.client.ServerProxy(XMLRPC_COMMON.format(ODOO_SERVER))
             uid = odoo.authenticate(db, ADMIN_USER, ADMIN_PASS, {})
             return uid
     except Exception as e:
@@ -18,23 +18,23 @@ def odoo_connect(db):
         LOG.error('Odoo Server: ' + str(ODOO_SERVER))
         LOG.error('XML OBJECT: ' + str(XMLRPC_OBJECT))
 
-def odoo_insert(db, lead, page_name):
+def odoo_insert(db, lead):
     try:
-        uid = odoo_connect(page_name)
+        uid = odoo_connect(db)
         if uid is not None and uid:
             models = xmlrpc.client.ServerProxy(XMLRPC_OBJECT.format(ODOO_SERVER))
-            id = models.execute_kw(db, ADMIN_USER, ADMIN_PASS, ODOO_TABLE, OPERATION_CREATE, [lead])
-            return 'Lead inserted with id' + id
+            id = models.execute_kw(db, uid, ADMIN_PASS, ODOO_TABLE, OPERATION_CREATE, [lead])
+            return 'Lead inserted with id' + str(id)
     except Exception as e:
         print('error trying to insert the lead into odoo' + str(e))
 
-def get_userId(db, userEmail, page_name):
+def get_userId(db, userEmail):
     try:
-        uid = odoo_connect(page_name)
+        uid = odoo_connect(db)
         if uid is not None and uid:
             models = xmlrpc.client.ServerProxy(XMLRPC_OBJECT.format(ODOO_SERVER))
-            ids = models.execute_kw(db, ADMIN_USER, ADMIN_PASS,'res.users', 'search',[[['login', '=', userEmail]]])
-            return ids
+            ids = models.execute_kw(db, uid, ADMIN_PASS,'res.users', 'search',[[['login', '=', userEmail]]])
+            return ids[0]
     except Exception as e:
         print('Could not read the user from Odoo Database' + str(e))
     

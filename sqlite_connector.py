@@ -45,7 +45,7 @@ def get_database(client_name):
     data = None
     if client_name and isinstance(client_name, str):
         try:
-            select_query = "SELECT "+ DB_KEY +" FROM " + CLIENTS_TABLE + " WHERE " + EMPRESA_KEY + " = '%s'"
+            select_query = "SELECT "+ DB_KEY +" FROM " + CLIENTS_TABLE + " WHERE " + EMPRESA_KEY + " LIKE '%s'"
             c.execute(select_query % client_name)
             data = c.fetchone()
             if data is not None and data and isinstance(data, tuple):
@@ -65,7 +65,7 @@ def get_user(client_name):
     data = None
     if client_name and isinstance(client_name, str):
         try:
-            select_query = "SELECT "+ USUARIO_LEAD_KEY +" FROM " + CLIENTS_TABLE + " WHERE " + EMPRESA_KEY + " = '%s'"
+            select_query = "SELECT "+ USUARIO_LEAD_KEY +" FROM " + CLIENTS_TABLE + " WHERE " + EMPRESA_KEY + " LIKE '%s'"
             c.execute(select_query % client_name)
             data = c.fetchone()
             if data is not None and data and isinstance(data, tuple):

@@ -4,8 +4,8 @@ from utils import build_response
 import logging as LOG
 from flask_wtf import CSRFProtect
 
-from sqlite_connector import new_client, list_clients, get_database
-from odoo_connector import odoo_insert
+from sqlite_connector import new_client, list_clients, get_database, get_user
+from odoo_connector import odoo_insert, get_userId, odoo_connect
 import json as jsonlib
 
 
@@ -38,8 +38,13 @@ def insert_lead():
         json = request.json
         page_name = json[PAGE_NAME]
         if page_name is not None and page_name:
+            database = get_database(page_name.lower())
             odooJson = transformToOdooJson(json)
-            odoo_insertion = odoo_insert(get_database(page_name.lower()), odooJson, page_name)
+            extra_values = list()
+            extra_values.append((TYPE, TYPE_VALUE))
+            extra_values.append((USER_ID, get_userId(database, get_user(page_name.lower()))))
+            append_values_json(extra_values,json)
+            odoo_insertion = odoo_insert(database, odooJson)
     except Exception as e:
         print('exception')
 
@@ -68,12 +73,8 @@ def transformToOdooJson(json):
                 del json[key]
         else:
             del json[key]
-    #getUser
-    extra_values = list()
-    extra_values.append((TYPE, TYPE_VALUE))
-    extra_values.append((USER_ID, 1))
 
-    return append_values_json(extra_values, json)
+    return json
 
 def append_values_json(extra_values,json):
     for v in extra_values:
