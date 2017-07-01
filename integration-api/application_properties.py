@@ -18,7 +18,11 @@ ODOO_TABLE = 'crm.lead'
 
 
 '''---CONSTANTS---'''
+
 PAGE_NAME = 'page_name'
+USER_ID = 'user_id'
+TYPE = 'type'
+TYPE_VALUE = 'opportunity'
 EMPRESA_KEY = 'empresa'
 DB_KEY = 'db'
 USUARIO_LEAD_KEY = 'usuario_lead'

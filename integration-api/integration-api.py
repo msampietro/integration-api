@@ -11,8 +11,8 @@ import json as jsonlib
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
-csrf = CSRFProtect()
-csrf.init_app(app)
+#csrf = CSRFProtect()
+#csrf.init_app(app)
 LOG.basicConfig(filename=LOG_FILE, level=LOG.ERROR)
 
 @app.route('/')
@@ -33,15 +33,15 @@ def create_client():
 
 @app.route('/new_lead', methods=['POST'])
 def insert_lead():
+    try:
+        json = request.json
+        page_name = json[PAGE_NAME]
+        if page_name is not None and page_name:
+            odooJson = transformToOdooJson(json)
+            odoo_insertion = odoo_insert(get_database(page_name.lower()), odooJson, page_name)
+    except Exception as e:
+        print('exception')
 
-    page_name = request.form.get(PAGE_NAME)
-    dictt = dict(request.form)
-    json = jsonlib.dumps(dictt, ensure_ascii=False)
-
-    nombre = dictt['nombre'][0]
-
-    odooJson = transformToOdooJson(json)
-    odoo_insertion = odoo_insert(get_database(page_name.lower()), odooJson, page_name)
     return str(odoo_insertion)
 
 @app.route('/edit_clients', methods=['GET'])
@@ -57,18 +57,19 @@ def delete_clients():
 
 
 def transformToOdooJson(json):
-    json_copy = json.copy().items()
-    for key, values in json_copy:
+    for key, values in json.copy().items():
         k = getOdooKey(key)
         if k != None:
             if k == key:
-                json_copy[k] = json_copy[key]
+                json[k] = json[key]
             else:
-                json_copy[k] = json_copy[key]
-                del json_copy[key]
+                json[k] = json[key]
+                del json[key]
         else:
-            del json_copy[key]
-    return json_copy
+            del json[key]
+    #getUser
+    #appendValues
+    return json
 
 def getOdooKey(formKey):
     with open(MAPPINGS_FILE) as json_data:
@@ -79,6 +80,5 @@ def getOdooKey(formKey):
             return values
 
 if __name__ == '__main__':
-    app.run(port=5151)
-
+    app.run(host='0.0.0.0', port=5151)
 

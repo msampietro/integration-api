@@ -82,19 +82,3 @@ def list_clients():
         conn.close()
 
     return clients
-
-def get_clients():
-    c,conn = sqlite_connect()
-    data = None
-    try:
-        select_query = "SELECT * FROM " + CLIENTS_TABLE
-        c.execute(select_query)
-        data = c.fetchall()
-    except sqlite3.Error as sqe:
-        LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
-        LOG.error('Query: ' + str(select_query))
-
-    finally:
-        conn.close()
-
-    return data

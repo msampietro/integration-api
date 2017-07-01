@@ -10,9 +10,5 @@
   "telefono":"phone",
   "email":"email_from",
   "ciudad":"city",
-  "fax":"fax",
-  "page_id":"page_id",
-  "page_name":"page_name",
-  "variant":"variant",
-  "ip":"ip"
+  "fax":"fax"
 }

@@ -34,6 +34,7 @@
     </fieldset>
       <strong><p id="response" class="copyright"></p></strong>
   </form>
+  {% if clientedit %}
 <div class="table-responsive-vertical shadow-z-1 center-div">
       <table class="table table-hover table-mc-light-blue">
 <thead>
@@ -46,7 +47,7 @@
 </tr>
 </thead>
 <tbody>
-{% if clientedit %}
+
     {% for c in clientedit.client_list %}
         <tr>
 <td>{{c.empresa (class="transparenttext", spellcheck="false")}}</td>
@@ -56,11 +57,11 @@
           <td>{{ c.actualizar(onclick="actualizar(this.id)", class="button-small pure-button") }}</td>
         </tr>
     {% endfor %}
-{% endif %}
+
 </tbody>
 </table>
 </div>
-
+{% endif %}
 
 </div>
   
