@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#INTELLIJ IDEA
+.idea/
+
+#VISUAL STUDIO
+.vscode/

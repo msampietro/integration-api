@@ -60,6 +60,26 @@ def get_database(client_name):
 
     return data
 
+def get_user(client_name):
+    c, conn = sqlite_connect()
+    data = None
+    if client_name and isinstance(client_name, str):
+        try:
+            select_query = "SELECT "+ USUARIO_LEAD_KEY +" FROM " + CLIENTS_TABLE + " WHERE " + EMPRESA_KEY + " = '%s'"
+            c.execute(select_query % client_name)
+            data = c.fetchone()
+            if data is not None and data and isinstance(data, tuple):
+                data = data[0]
+        except sqlite3.Error as sqe:
+            LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
+            LOG.error('Query: ' + str(select_query))
+            LOG.error('Client name: ' + str(client_name))
+
+        finally:
+            conn.close()
+
+    return data
+
 def list_clients():
     c,conn = sqlite_connect()
     clients = ClientList()
