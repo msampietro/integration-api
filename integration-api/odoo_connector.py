@@ -28,3 +28,14 @@ def odoo_insert(db, lead, page_name):
     except Exception as e:
         print('error trying to insert the lead into odoo' + str(e))
 
+def get_userId(db, userEmail, page_name):
+    try:
+        uid = odoo_connect(page_name)
+        if uid is not None and uid:
+            models = xmlrpc.client.ServerProxy(XMLRPC_OBJECT.format(ODOO_SERVER))
+            ids = models.execute_kw(db, ADMIN_USER, ADMIN_PASS,'res.users', 'search',[[['login', '=', userEmail]]])
+            return ids
+    except Exception as e:
+        print('Could not read the user from Odoo Database' + str(e))
+    
+
