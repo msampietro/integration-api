@@ -90,6 +90,7 @@ def list_clients():
         if data is not None and data and (isinstance(data, list) or isinstance(data, tuple)):
             for d in data:
                 client = ClientForm()
+                client.codigo = d[0]
                 client.empresa = d[1]
                 client.db = d[2]
                 client.usuario_lead = d[3]
@@ -102,3 +103,49 @@ def list_clients():
         conn.close()
 
     return clients
+
+def update_client(company, db, user_lead, id):
+    c, conn = sqlite_connect()
+    try:
+        if c and conn:
+            if isinstance(company, str) and validate_regex(db, DATABASE_REGEX) \
+                    and validate_regex(user_lead, EMAIL_REGEX):
+                client = (company, db, user_lead, id)
+                update_query = 'UPDATE ' + CLIENTS_TABLE + ' SET empresa=?,db=?,usuario_lead=? WHERE id=?'
+                c.execute(update_query, client)
+                conn.commit()
+                message = build_response('Cliente actualizado con exito!', 200)
+            else:
+                message = build_response('Error en los datos, verificar formato de MAIL y BASE DE DATOS', 400)
+    except sqlite3.Error as sqe:
+        message = build_response('Error al intentar actualizar el cliente, es posible que alguno de los datos especificados ya exista', 400)
+        LOG.error('Sqlite Error al actualizar ' + str(sqe))
+        LOG.error('Parametros recibidos: ' + str(client))
+        LOG.error('Query: ' + str(update_query))
+
+    finally:
+        conn.close()
+
+    return message
+
+
+def delete_client(id):
+    c, conn = sqlite_connect()
+    try:
+        if c and conn:
+            if id is not None and id:
+                delete_query = 'DELETE FROM ' + CLIENTS_TABLE + ' WHERE id=?'
+                c.execute(delete_query, id)
+                conn.commit()
+                message = build_response('Cliente eliminado con exito!', 200)
+            else:
+                message = build_response('Error en los datos, verificar formato de MAIL y BASE DE DATOS', 400)
+    except sqlite3.Error as sqe:
+        message = build_response('Error al intentar borrar el cliente', 400)
+        LOG.error('Sqlite Error al borrar ' + str(sqe))
+        LOG.error('Query: ' + str(delete_query))
+
+    finally:
+        conn.close()
+
+    return message

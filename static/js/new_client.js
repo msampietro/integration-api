@@ -16,39 +16,97 @@ $(document).ready(function(){
                 'db':$('#db').val(),
                 'usuario_lead':$('#usuario_lead').val()}, // data sent with the post request
         success : function(resp) {
-        $('#response').text(resp)
+            if(resp.status!=200){
+                $('#response').text(resp.details)
+            }
+            else
+            {window.location.href = window.location + '/edit_clients'}
+
+
+    },
+        error : function(xhr,errmsg,err) {
+        $('#response').text(err.details)
+}
+});
+
+});
+
+
+
+});
+
+    function actualizar(id) {
+    res = id.match('(client_list-[0-9]{1,}-)');
+    empresa_id = res[0]+'empresa';
+    codigo_id = res[0]+'codigo';
+    codigo = $('#'+codigo_id).val()
+    empresa = $('#'+empresa_id).val();
+    db_id = res[0]+'db';
+    db = $('#'+db_id).val();
+    usuario_id = res[0]+'usuario_lead';
+    usuario_lead = $('#'+usuario_id).val();
+
+      $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+
+
+
+     $.ajax({
+        type : "POST",
+        url : "/update_client", // the endpoint,commonly same url // http method
+        data : {'empresa':empresa, 'db':db,'usuario_lead':usuario_lead, 'id':codigo}, // data sent with the post request
+        success : function(resp) {
+             $('#response').text(resp.details)
+            if(resp.status==200){
+                  window.location.href = window.location.href
+            }
 
     },
         error : function(xhr,errmsg,err) {
         $('#response').text(err)
 }
 });
+}
 
-});
 
-});
+  function eliminar(id) {
+    res = id.match('(client_list-[0-9]{1,}-)');
+    empresa_id = res[0]+'empresa';
+    codigo_id = res[0]+'codigo';
+    codigo = $('#'+codigo_id).val()
 
-function actualizar(id) {
-    res = id.match('(client_list-[0-9]{1,}-)')
-    empresa_id = res[0]+'empresa'
-    empresa = $('#'+empresa_id).val()
-    db_id = res[0]+'db'
-    db = $('#'+db_id).val()
-    usuario_id = res[0]+'usuario_lead'
-    usuario_lead = $('#'+usuario_id).val()
-    alert(empresa);
-   /*  $.ajax({
+      $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+
+
+     $.ajax({
         type : "POST",
         url : "/delete_client", // the endpoint,commonly same url // http method
-        data : {'value':res}, // data sent with the post request
+        data : {'id':codigo}, // data sent with the post request
         success : function(resp) {
-        $('#response').text(resp)
+            $('#response').text(resp.details)
+            if(resp.status==200){
+                window.location.href = window.location.href
+            }
+
 
     },
         error : function(xhr,errmsg,err) {
         $('#response').text(err)
 }
-});*/
+});
 }
+
+
 
 

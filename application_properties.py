@@ -14,6 +14,7 @@ CLIENTS_TABLE = 'configurations'
 XMLRPC_COMMON = '{}/xmlrpc/2/common'
 XMLRPC_OBJECT = '{}/xmlrpc/2/object'
 SECRET_KEY = '$0627=j55we6m#lqj5zmiryt3jmnt(#nua5*o&f6-l)dt#u&ro'
+API_KEY = 'mg^-+njf=cv==l5(%&5+7o5fq6j6grc_zj!ehu$2^z(5mld)xl'
 OPERATION_CREATE = 'create'
 ODOO_TABLE = 'crm.lead'
 
@@ -27,5 +28,6 @@ TYPE_VALUE = 'opportunity'
 EMPRESA_KEY = 'empresa'
 DB_KEY = 'db'
 USUARIO_LEAD_KEY = 'usuario_lead'
+AUTHORIZATION = 'Authorization'
 
 

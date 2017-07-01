@@ -1,23 +1,24 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, abort
 from application_properties import *
-from utils import build_response
+from utils import build_response, encode_auth_token,decode_auth_token
 import logging as LOG
 from flask_wtf import CSRFProtect
 
-from sqlite_connector import new_client, list_clients, get_database, get_user
+from sqlite_connector import new_client, list_clients, get_database, get_user, update_client, delete_client
 from odoo_connector import odoo_insert, get_userId, odoo_connect
 import json as jsonlib
 
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
-#csrf = CSRFProtect()
-#csrf.init_app(app)
+csrf = CSRFProtect()
+csrf.init_app(app)
 LOG.basicConfig(filename=LOG_FILE, level=LOG.ERROR)
 
 @app.route('/')
 def index():
     return render_template('index.html', name='index')
+
 
 @app.route('/new_client', methods=['POST'])
 def create_client():
@@ -31,24 +32,32 @@ def create_client():
 
     return build_response('Hay argumentos faltantes o incorrectos en la peticion', 400)
 
+@csrf.exempt
 @app.route('/new_lead', methods=['POST'])
 def insert_lead():
-    odoo_insertion = None
     try:
         json = request.json
-        page_name = json[PAGE_NAME]
+        #page_name = json[PAGE_NAME]
+        page_name = 'Directv'
         if page_name is not None and page_name:
-            database = get_database(page_name.lower())
-            odooJson = transformToOdooJson(json)
-            extra_values = list()
-            extra_values.append((TYPE, TYPE_VALUE))
-            extra_values.append((USER_ID, get_userId(database, get_user(page_name.lower()))))
-            append_values_json(extra_values,json)
-            odoo_insertion = odoo_insert(database, odooJson)
+            auth = request.headers[AUTHORIZATION]
+            if auth and auth == API_KEY:
+                database = get_database(page_name.lower())
+                odooJson = transformToOdooJson(json)
+                extra_values = list()
+                extra_values.append((TYPE, TYPE_VALUE))
+                extra_values.append((USER_ID, get_userId(database, get_user(page_name.lower()))))
+                append_values_json(extra_values,json)
+                odoo_insertion = odoo_insert(database, odooJson)
+        else:
+            abort(401)
     except Exception as e:
-        print('exception')
+        abort(400)
 
-    return str(odoo_insertion)
+    return build_response('Success',200)
+
+
+
 
 @app.route('/edit_clients', methods=['GET'])
 def get_clients():
@@ -56,10 +65,18 @@ def get_clients():
     return render_template('index.html', clientedit=clients)
 
 
-@app.route('/delete_clients', methods=['POST'])
+@app.route('/delete_client', methods=['POST'])
 def delete_clients():
-    id = request.form.get('res')
-    return id
+    id = request.form.get('id')
+    return delete_client(id)
+
+@app.route('/update_client', methods=['POST'])
+def update_clients():
+    empresa = request.form.get('empresa')
+    db = request.form.get('db')
+    usuario_lead = request.form.get('usuario_lead')
+    id = request.form.get('id')
+    return update_client(empresa, db, usuario_lead, id)
 
 
 def transformToOdooJson(json):

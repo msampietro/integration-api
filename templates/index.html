@@ -39,6 +39,7 @@
       <table class="table table-hover table-mc-light-blue">
 <thead>
 <tr>
+    <th style="text-align: center;">Numero</th>
 <th style="text-align: center;">Empresa</th>
 <th style="text-align: center;">Base de Datos</th>
     <th style="text-align: center;">Email destino de Leads</th>
@@ -50,6 +51,7 @@
 
     {% for c in clientedit.client_list %}
         <tr>
+        <td>{{c.codigo(class="transparenttext", spellcheck="false")}}</td>
 <td>{{c.empresa (class="transparenttext", spellcheck="false")}}</td>
 <td>{{ c.db (class="transparenttext", spellcheck="false")}}</td>
     <td>{{ c.usuario_lead(class="transparenttext", spellcheck="false")}}</td>
