@@ -6,7 +6,10 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/new_client.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
       <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/buttons.css') }}">
     <script>var csrf_token = "{{ csrf_token() }}"</script>
 
 </head>
@@ -31,6 +34,34 @@
     </fieldset>
       <strong><p id="response" class="copyright"></p></strong>
   </form>
+<div class="table-responsive-vertical shadow-z-1 center-div">
+      <table class="table table-hover table-mc-light-blue">
+<thead>
+<tr>
+<th style="text-align: center;">Empresa</th>
+<th style="text-align: center;">Base de Datos</th>
+    <th style="text-align: center;">Email destino de Leads</th>
+        <th></th>
+        <th></th>
+</tr>
+</thead>
+<tbody>
+{% if clientedit %}
+    {% for c in clientedit.client_list %}
+        <tr>
+<td>{{c.empresa (class="transparenttext", spellcheck="false")}}</td>
+<td>{{ c.db (class="transparenttext", spellcheck="false")}}</td>
+    <td>{{ c.usuario_lead(class="transparenttext", spellcheck="false")}}</td>
+          <td>{{ c.eliminar(onclick="eliminar(this.id)",class="button-small pure-button") }}</td>
+          <td>{{ c.actualizar(onclick="actualizar(this.id)", class="button-small pure-button") }}</td>
+        </tr>
+    {% endfor %}
+{% endif %}
+</tbody>
+</table>
+</div>
+
+
 </div>
   
   

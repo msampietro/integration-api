@@ -2,6 +2,7 @@ import sqlite3
 from application_properties import *
 from utils import validate_regex, build_response
 import logging
+from clients_form import ClientForm, ClientList
 
 LOG = logging.getLogger(__name__)
 
@@ -56,5 +57,44 @@ def get_database(client_name):
 
         finally:
             conn.close()
+
+    return data
+
+def list_clients():
+    c,conn = sqlite_connect()
+    clients = ClientList()
+    try:
+        select_query = "SELECT * FROM " + CLIENTS_TABLE
+        c.execute(select_query)
+        data = c.fetchall()
+        if data is not None and data and (isinstance(data, list) or isinstance(data, tuple)):
+            for d in data:
+                client = ClientForm()
+                client.empresa = d[1]
+                client.db = d[2]
+                client.usuario_lead = d[3]
+                clients.client_list.append_entry(client)
+    except sqlite3.Error as sqe:
+        LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
+        LOG.error('Query: ' + str(select_query))
+
+    finally:
+        conn.close()
+
+    return clients
+
+def get_clients():
+    c,conn = sqlite_connect()
+    data = None
+    try:
+        select_query = "SELECT * FROM " + CLIENTS_TABLE
+        c.execute(select_query)
+        data = c.fetchall()
+    except sqlite3.Error as sqe:
+        LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
+        LOG.error('Query: ' + str(select_query))
+
+    finally:
+        conn.close()
 
     return data

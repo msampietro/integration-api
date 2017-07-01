@@ -4,9 +4,9 @@ from utils import build_response
 import logging as LOG
 from flask_wtf import CSRFProtect
 
-from sqlite_connector import new_client, sqlite_connect, get_database
+from sqlite_connector import new_client, list_clients, get_database, get_clients
 from odoo_connector import odoo_connect, odoo_insert
-import json
+import json as jsonlib
 
 
 app = Flask(__name__)
@@ -33,35 +33,52 @@ def create_client():
 
 @app.route('/new_lead', methods=['POST'])
 def insert_lead():
-    json = request.get_json()
-    page_name = json[PAGE_NAME]
+
+    page_name = request.form.get(PAGE_NAME)
+    dictt = dict(request.form)
+    json = jsonlib.dumps(dictt, ensure_ascii=False)
+
+    nombre = dictt['nombre'][0]
 
     odooJson = transformToOdooJson(json)
     odoo_insertion = odoo_insert(get_database(page_name.lower()), odooJson, page_name)
     return str(odoo_insertion)
 
+@app.route('/edit_clients', methods=['GET'])
+def get_clients():
+    clients = list_clients()
+    return render_template('index.html', clientedit=clients)
+
+
+@app.route('/delete_clients', methods=['POST'])
+def delete_clients():
+    id = request.form.get('res')
+    return id
+
+
 def transformToOdooJson(json):
-    for key, values in json.copy().items():
+    json_copy = json.copy().items()
+    for key, values in json_copy:
         k = getOdooKey(key)
         if k != None:
             if k == key:
-                json[k] = json[key]
+                json_copy[k] = json_copy[key]
             else:
-                json[k] = json[key]
-                del json[key]
+                json_copy[k] = json_copy[key]
+                del json_copy[key]
         else:
-            del json[key]
-    return json
+            del json_copy[key]
+    return json_copy
 
 def getOdooKey(formKey):
-    with open('./odoo_mappings.json') as json_data:
-        odooMapping = json.load(json_data)
+    with open(MAPPINGS_FILE) as json_data:
+        odooMapping = jsonlib.load(json_data)
 
     for key, values in odooMapping.items():
         if formKey == key:
             return values
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5151)
 
 

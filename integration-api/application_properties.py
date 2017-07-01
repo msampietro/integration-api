@@ -3,6 +3,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_FILE = BASE_DIR + '\integration-api.log'
 SQLITE_PATH = BASE_DIR + '\clients.db'
+MAPPINGS_FILE = BASE_DIR + '\odoo_mappings.json'
 ODOO_SERVER = 'http://198.199.72.215:8069'
 ADMIN_USER = 'tinchosampietro@hotmail.com'
 ADMIN_PASS =  'odoo11223344'
