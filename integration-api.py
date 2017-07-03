@@ -1,12 +1,15 @@
-from flask import Flask, request, render_template, abort
+from flask import Flask, request, render_template, abort, flash, redirect, url_for
 from application_properties import *
 from utils import build_response, append_values_json, transform_odoo_json
 import logging as LOG
 from flask_wtf import CSRFProtect
+from flask_login import LoginManager, login_required, login_user, logout_user
 
 from sqlite_connector import new_client, list_clients, get_database, \
     get_user, update_client, delete_client
 from odoo_connector import odoo_insert, get_user_id, odoo_connect
+from user_form import User
+from clients_form import LoginForm
 
 
 
@@ -14,19 +17,42 @@ app = Flask(__name__)
 app.secret_key = SECRET_KEY
 csrf = CSRFProtect()
 csrf.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 LOG.basicConfig(filename=LOG_FILE, level=LOG.ERROR)
 
+@app.route('/', methods=['GET'])
+def index():
+    return "Welcome"
 @app.route('/clients', methods=['GET'])
+@login_required
 def get_clients():
     clients = list_clients()
     return render_template('index.html', clientedit=clients)
 
-@app.route('/', methods=['GET'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
-    return render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
+    else:
+        username = request.form['username']
+        password = request.form['password']
+        user = User.get(username)
+        if user.password == password:
+            login_user(user)
+
+            flash('Logged in successfully.')
+
+            return redirect(url_for('index'))
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 @app.route('/new_client', methods=['POST'])
+@login_required
 def create_client():
     company = request.form.get(EMPRESA_KEY)
     db = request.form.get(DB_KEY)
@@ -66,11 +92,13 @@ def insert_lead():
 
 
 @app.route('/delete_client', methods=['POST'])
+@login_required
 def delete_clients():
     id = request.form.get('id')
     return delete_client(id)
 
 @app.route('/update_client', methods=['POST'])
+@login_required
 def update_clients():
     empresa = request.form.get('empresa')
     db = request.form.get('db')
@@ -78,6 +106,9 @@ def update_clients():
     id = request.form.get('id')
     return update_client(empresa, db, usuario_lead, id)
 
+@login_manager.user_loader
+def load_user(id):
+    return User.get_id(id)
 
 
 if __name__ == '__main__':

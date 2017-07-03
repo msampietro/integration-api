@@ -1,15 +1,21 @@
 <!DOCTYPE html>
-<html >
+<html>
+
 <head>
-  <meta charset="UTF-8">
-  <title>Modulo de Integracion</title>
+    <meta charset="UTF-8">
+    <title>Modulo de Integracion</title>
 
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/new_client.js') }}"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-    <script>var csrf_token = "{{ csrf_token() }}"</script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+    <script>
+        var csrf_token = "{{ csrf_token() }}"
+    </script>
 
 
 
@@ -18,56 +24,57 @@
 <body>
     <div style="margin-top:1%;" class="container col-lg-4 table-bordered">
         <h5 style="text-align:center;margin-bottom:3%;margin-top:1%;">Modulo de Integracion de Clientes</h5>
-  <form id="register_client" method="post" class="panel-body">
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-          <label>Empresa</label>
-      <input id='empresa' class="form-control" type="text" tabindex="1" required autofocus>
-         <label style="margin-top:2%;">Base de datos</label>
-      <input id='db' class="form-control" type="text" tabindex="2" required>
-      <small id="helpDb" class="form-text text-muted">Recordar: Esta base de datos debe ser creada en el CRM</small>
-      <small id="helpDb2" class="form-text text-muted">Formato estilo patente, Ejemplo: 000AAA</small>
-          <label style="margin-top:2%;">Email destino de los leads</label>
-      <input id='usuario_lead' class="form-control" type="email" tabindex="3" required>
-        <tr></tr>
-      <button name="submit" style='margin-top:3%' class="btn btn-success col-lg-12" type="button" id="register-submit">Guardar</button>
-        <strong><p style="text-align: center;color:#5a6e76;" id="response"></p></strong>
-      <p id="space"></p>
-  </form>
+        <form id="register_client" method="post" class="panel-body">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <label>Empresa</label>
+            <input id='empresa' class="form-control" type="text" tabindex="1" required autofocus>
+            <label style="margin-top:2%;">Base de datos</label>
+            <input id='db' class="form-control" type="text" tabindex="2" required>
+            <small id="helpDb" class="form-text text-muted">Recordar: Esta base de datos debe ser creada en el CRM</small>
+            <small id="helpDb2" class="form-text text-muted">Formato estilo patente, Ejemplo: 000AAA</small>
+            <label style="margin-top:2%;">Email destino de los leads</label>
+            <input id='usuario_lead' class="form-control" type="email" tabindex="3" required>
+            <tr></tr>
+            <button name="submit" style='margin-top:3%' class="btn btn-success col-lg-12" type="button" id="register-submit">Guardar</button>
+            <strong><p style="text-align: center;color:#5a6e76;" id="response"></p></strong>
+            <p id="space"></p>
+        </form>
     </div>
 
-  {% if clientedit %}
-<div class="container">
-      <table style="margin-top:5%;" class="table table-sm">
-<thead>
-<tr>
-    <th style="text-align: center;">Numero</th>
-<th style="text-align: center;">Empresa</th>
-<th style="text-align: center;">Base de Datos</th>
-    <th style="text-align: center;">Email destino de Leads</th>
-        <th></th>
-    <th></th>
-</tr>
-</thead>
-<tbody>
+    {% if clientedit %}
+    <div class="container">
+        <table style="margin-top:5%;" class="table table-sm">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Numero</th>
+                    <th style="text-align: center;">Empresa</th>
+                    <th style="text-align: center;">Base de Datos</th>
+                    <th style="text-align: center;">Email destino de Leads</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
 
-    {% for c in clientedit.client_list %}
-        <tr scope="row">
-        <td>{{c.codigo(class="form-control", spellcheck="false")}}</td>
-<td>{{c.empresa (class="form-control", spellcheck="false")}}</td>
-<td>{{ c.db (class="form-control", spellcheck="false")}}</td>
-    <td>{{ c.usuario_lead(class="form-control", spellcheck="false")}}</td>
-          <td>{{ c.eliminar(onclick="eliminar(this.id)",class="form-control") }}</td>
-          <td>{{ c.actualizar(onclick="actualizar(this.id)", class="form-control") }}</td>
-        </tr>
-    {% endfor %}
+                {% for c in clientedit.client_list %}
+                <tr scope="row">
+                    <td>{{c.codigo(class="form-control", spellcheck="false")}}</td>
+                    <td>{{c.empresa (class="form-control", spellcheck="false")}}</td>
+                    <td>{{ c.db (class="form-control", spellcheck="false")}}</td>
+                    <td>{{ c.usuario_lead(class="form-control", spellcheck="false")}}</td>
+                    <td>{{ c.eliminar(onclick="eliminar(this.id)",class="form-control") }}</td>
+                    <td>{{ c.actualizar(onclick="actualizar(this.id)", class="form-control") }}</td>
+                </tr>
+                {% endfor %}
 
-</tbody>
-</table>
-</div>
-{% endif %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 
 
-  
-  
+
+
 </body>
+
 </html>

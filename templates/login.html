@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Iniciar Sesion</title>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <title>Iniciar Sesion</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+    crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+    crossorigin="anonymous"></script>
 </head>
+
 <body>
-    <div style="margin-top:1%;" class="container col-lg-4 table-bordered">
-        <h5 style="text-align:center;margin-bottom:3%;margin-top:1%;">Inicio de Sesion</h5>
-         <small style="text-align: center;" id="intro" class="form-text text-muted">Bienvenido al Modulo de Integracion de Clientes</small>
-  <form id="register_client" method="post" class="panel-body">
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-          <label>Usuario</label>
-      <input id='user' class="form-control" type="text" tabindex="1" required autofocus>
-         <label style="margin-top:2%;">Contraseña</label>
-      <input id='pass' class="form-control" type="text" tabindex="2" required>
-        <tr></tr>
-      <button name="submit" style='margin-top:3%' class="btn btn-primary col-lg-12" type="button" id="register-submit">Entrar</button>
-        <strong><p style="text-align: center;color:#5a6e76;" id="response"></p></strong>
+  <div style="margin-top:1%;" class="container col-lg-4 table-bordered">
+    <h5 style="text-align:center;margin-bottom:3%;margin-top:1%;">Inicio de Sesion</h5>
+    <small style="text-align: center;" id="intro" class="form-text text-muted">Bienvenido al Modulo de Integracion de Clientes</small>
+    <form id="register_client" method="post" class="panel-body" action='/login'>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <label>Usuario</label>
+      <input id='username' name='username' class="form-control" type="text" tabindex="1" required autofocus>
+      <label style="margin-top:2%;">Contraseña</label>
+      <input id='password' name='password' class="form-control" type="text" tabindex="2" required>
+      <tr></tr>
+      <button name="submit" style='margin-top:3%' class="btn btn-primary col-lg-12" type="submit" id="register-submit">Entrar</button>
+      <strong><p style="text-align: center;color:#5a6e76;" id="response"></p></strong>
       <p id="space"></p>
-  </form>
-    </div>
+    </form>
+  </div>
 </body>
+
 </html>

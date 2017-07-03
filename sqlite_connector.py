@@ -4,6 +4,7 @@ from utils import validate_regex, build_response
 import logging
 from clients_form import ClientForm, ClientList
 
+
 LOG = logging.getLogger(__name__)
 
 def sqlite_connect():
@@ -149,3 +150,39 @@ def delete_client(id):
         conn.close()
 
     return message
+
+def search_user(username):
+    c, conn = sqlite_connect()
+    data = None
+    if username and isinstance(username, str):
+        try:
+            select_query = "SELECT * FROM users WHERE username LIKE '%s'" 
+            c.execute(select_query % username)
+            data = c.fetchone()
+        except sqlite3.Error as sqe:
+            LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
+            LOG.error('Query: ' + str(select_query))
+            LOG.error('USER name: ' + str(client_name))
+
+        finally:
+            conn.close()
+
+    return data
+
+def search_user_by_id(id):
+    c, conn = sqlite_connect()
+    data = None
+    if id and isinstance(id, str):
+        try:
+            select_query = "SELECT * FROM users WHERE id LIKE '%s'" 
+            c.execute(select_query % id)
+            data = c.fetchone()
+        except sqlite3.Error as sqe:
+            LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
+            LOG.error('Query: ' + str(select_query))
+            LOG.error('USER name: ' + str(client_name))
+
+        finally:
+            conn.close()
+
+    return data
