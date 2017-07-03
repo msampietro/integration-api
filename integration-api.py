@@ -1,12 +1,13 @@
 from flask import Flask, request, render_template, abort
 from application_properties import *
-from utils import build_response, encode_auth_token,decode_auth_token
+from utils import build_response, append_values_json, transform_odoo_json
 import logging as LOG
 from flask_wtf import CSRFProtect
 
-from sqlite_connector import new_client, list_clients, get_database, get_user, update_client, delete_client
-from odoo_connector import odoo_insert, get_userId, odoo_connect
-import json as jsonlib
+from sqlite_connector import new_client, list_clients, get_database, \
+    get_user, update_client, delete_client
+from odoo_connector import odoo_insert, get_user_id, odoo_connect
+
 
 
 app = Flask(__name__)
@@ -15,9 +16,14 @@ csrf = CSRFProtect()
 csrf.init_app(app)
 LOG.basicConfig(filename=LOG_FILE, level=LOG.ERROR)
 
-@app.route('/')
-def index():
-    return render_template('index.html', name='index')
+@app.route('/clients', methods=['GET'])
+def get_clients():
+    clients = list_clients()
+    return render_template('index.html', clientedit=clients)
+
+@app.route('/', methods=['GET'])
+def login():
+    return render_template('login.html')
 
 
 @app.route('/new_client', methods=['POST'])
@@ -37,32 +43,26 @@ def create_client():
 def insert_lead():
     try:
         json = request.json
-        #page_name = json[PAGE_NAME]
-        page_name = 'Directv'
+        page_name = json[PAGE_NAME]
         if page_name is not None and page_name:
             auth = request.headers[AUTHORIZATION]
             if auth and auth == API_KEY:
                 database = get_database(page_name.lower())
-                odooJson = transformToOdooJson(json)
+                odoo_json = transform_odoo_json(json)
+                uid = odoo_connect(database)
+                user_id = get_user_id(database, get_user(page_name.lower()), uid)
                 extra_values = list()
                 extra_values.append((TYPE, TYPE_VALUE))
-                extra_values.append((USER_ID, get_userId(database, get_user(page_name.lower()))))
-                append_values_json(extra_values,json)
-                odoo_insertion = odoo_insert(database, odooJson)
+                extra_values.append((USER_ID, user_id))
+                append_values_json(extra_values, json)
+                odoo_insert(database, odoo_json, uid)
         else:
             abort(401)
     except Exception as e:
         abort(400)
 
-    return build_response('Success',200)
+    return build_response('Success', 200)
 
-
-
-
-@app.route('/edit_clients', methods=['GET'])
-def get_clients():
-    clients = list_clients()
-    return render_template('index.html', clientedit=clients)
 
 
 @app.route('/delete_client', methods=['POST'])
@@ -79,34 +79,6 @@ def update_clients():
     return update_client(empresa, db, usuario_lead, id)
 
 
-def transformToOdooJson(json):
-    for key, values in json.copy().items():
-        k = getOdooKey(key)
-        if k != None:
-            if k == key:
-                json[k] = json[key]
-            else:
-                json[k] = json[key]
-                del json[key]
-        else:
-            del json[key]
-
-    return json
-
-def append_values_json(extra_values,json):
-    for v in extra_values:
-        value = v[1]
-        if value is not None and value:
-            json[v[0]] = value
-    return json
-
-def getOdooKey(formKey):
-    with open(MAPPINGS_FILE) as json_data:
-        odooMapping = jsonlib.load(json_data)
-
-    for key, values in odooMapping.items():
-        if formKey == key:
-            return values
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5151)

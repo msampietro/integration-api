@@ -81,7 +81,7 @@ def get_user(client_name):
     return data
 
 def list_clients():
-    c,conn = sqlite_connect()
+    c, conn = sqlite_connect()
     clients = ClientList()
     try:
         select_query = "SELECT * FROM " + CLIENTS_TABLE

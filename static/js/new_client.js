@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $( "#register-submit" ).click(function() {
+    $( "#register-submit" ).on('click',function() {
 
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
@@ -18,14 +18,17 @@ $(document).ready(function(){
         success : function(resp) {
             if(resp.status!=200){
                 $('#response').text(resp.details)
+                setTimeout(function(){ $('#response').text(""); }, 2000);
             }
-            else
-            {window.location.href = window.location + '/edit_clients'}
-
+            else{
+                $('#response').text(resp.details)
+                 setTimeout(function(){window.location.href = window.location;}, 2000);
+            }
 
     },
         error : function(xhr,errmsg,err) {
         $('#response').text(err.details)
+             setTimeout(function(){ $('#response').text(""); }, 2000);
 }
 });
 
@@ -63,7 +66,9 @@ $(document).ready(function(){
         success : function(resp) {
              $('#response').text(resp.details)
             if(resp.status==200){
-                  window.location.href = window.location.href
+                 setTimeout(function(){ window.location.href = window.location.href; }, 2000);
+            } else {
+                setTimeout(function(){ window.location.href = window.location.href; }, 2000);
             }
 
     },
@@ -96,10 +101,11 @@ $(document).ready(function(){
         success : function(resp) {
             $('#response').text(resp.details)
             if(resp.status==200){
-                window.location.href = window.location.href
+                 setTimeout(function(){ window.location.href = window.location.href; }, 2000);
             }
-
-
+            else {
+                 setTimeout(function(){  window.location.href = window.location.href; }, 2000);
+            }
     },
         error : function(xhr,errmsg,err) {
         $('#response').text(err)

@@ -1,9 +1,9 @@
 import re
 from flask import jsonify
 import logging
-import datetime
+import json as jsonlib
 from application_properties import *
-import jwt
+
 LOG = logging.getLogger(__name__)
 
 
@@ -35,27 +35,31 @@ def build_response(message, code):
 
     return response
 
-def encode_auth_token(user_id):
-    try:
-        payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
-            'iat': datetime.datetime.utcnow(),
-            'sub': user_id
-        }
-        return jwt.encode(
-            payload,
-            SECRET_KEY,
-            algorithm='HS256'
-        )
-    except Exception as e:
-        return e
+def transform_odoo_json(json):
+    for key, values in json.copy().items():
+        k = get_odoo_key(key)
+        if k != None:
+            if k == key:
+                json[k] = json[key]
+            else:
+                json[k] = json[key]
+                del json[key]
+        else:
+            del json[key]
 
+    return json
 
-def decode_auth_token(auth_token):
-    try:
-        payload = jwt.decode(auth_token, SECRET_KEY)
-        return payload['sub']
-    except jwt.ExpiredSignatureError:
-        return 'Signature expired. Please log in again.'
-    except jwt.InvalidTokenError:
-        return 'Invalid token. Please log in again.'
+def append_values_json(extra_values, json):
+    for v in extra_values:
+        value = v[1]
+        if value is not None and value:
+            json[v[0]] = value
+    return json
+
+def get_odoo_key(formKey):
+    with open(MAPPINGS_FILE) as json_data:
+        odoo_mapping = jsonlib.load(json_data)
+
+    for key, values in odoo_mapping.items():
+        if formKey == key:
+            return values
