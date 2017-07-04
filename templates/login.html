@@ -16,15 +16,15 @@
   <div style="margin-top:1%;" class="container col-lg-4 table-bordered">
     <h5 style="text-align:center;margin-bottom:3%;margin-top:1%;">Inicio de Sesion</h5>
     <small style="text-align: center;" id="intro" class="form-text text-muted">Bienvenido al Modulo de Integracion de Clientes</small>
-    <form id="register_client" method="post" class="panel-body" action='/login'>
+    <form id="register_client" method="post" class="panel-body" action='/'>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       <label>Usuario</label>
       <input id='username' name='username' class="form-control" type="text" tabindex="1" required autofocus>
       <label style="margin-top:2%;">Contraseña</label>
-      <input id='password' name='password' class="form-control" type="text" tabindex="2" required>
+      <input id='password' name='password' class="form-control" type="password" tabindex="2" required>
       <tr></tr>
       <button name="submit" style='margin-top:3%' class="btn btn-primary col-lg-12" type="submit" id="register-submit">Entrar</button>
-      <strong><p style="text-align: center;color:#5a6e76;" id="response"></p></strong>
+      <strong><p style="text-align: center;color:#5a6e76;" id="response">{% if message %}{{ message }}{% endif %}</p></strong>
       <p id="space"></p>
     </form>
   </div>

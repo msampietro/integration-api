@@ -32,6 +32,13 @@ def build_response(message, code):
             status=200
 
         )
+    elif code == 401:
+        response = jsonify(
+            details=message,
+            message='FORBIDDEN. Invalid Credentials',
+            status=200
+
+        )
 
     return response
 

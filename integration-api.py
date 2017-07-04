@@ -1,15 +1,13 @@
-from flask import Flask, request, render_template, abort, flash, redirect, url_for
+from flask import Flask, request, render_template, abort, redirect, url_for
 from application_properties import *
 from utils import build_response, append_values_json, transform_odoo_json
 import logging as LOG
 from flask_wtf import CSRFProtect
-from flask_login import LoginManager, login_required, login_user, logout_user
-
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from sqlite_connector import new_client, list_clients, get_database, \
     get_user, update_client, delete_client
 from odoo_connector import odoo_insert, get_user_id, odoo_connect
 from user_form import User
-from clients_form import LoginForm
 
 
 
@@ -21,29 +19,29 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 LOG.basicConfig(filename=LOG_FILE, level=LOG.ERROR)
 
-@app.route('/', methods=['GET'])
-def index():
-    return "Welcome"
+
 @app.route('/clients', methods=['GET'])
 @login_required
 def get_clients():
     clients = list_clients()
     return render_template('index.html', clientedit=clients)
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        if current_user.is_authenticated:
+            return redirect(url_for('get_clients'))
+        else:
+            return render_template('login.html')
     else:
         username = request.form['username']
         password = request.form['password']
         user = User.get(username)
-        if user.password == password:
-            login_user(user)
-
-            flash('Logged in successfully.')
-
-            return redirect(url_for('index'))
+        if user:
+            if user.password == password:
+                login_user(user)
+                return redirect(url_for('get_clients'))
+        return render_template('login.html', message='Credenciales invalidas')
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -108,9 +106,9 @@ def update_clients():
 
 @login_manager.user_loader
 def load_user(id):
-    return User.get_id(id)
+    return User.get_object(id)
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5151)
+    app.run(host='0.0.0.0', port=80)
 

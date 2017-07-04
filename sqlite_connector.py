@@ -129,7 +129,6 @@ def update_client(company, db, user_lead, id):
 
     return message
 
-
 def delete_client(id):
     c, conn = sqlite_connect()
     try:
@@ -162,7 +161,7 @@ def search_user(username):
         except sqlite3.Error as sqe:
             LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
             LOG.error('Query: ' + str(select_query))
-            LOG.error('USER name: ' + str(client_name))
+            LOG.error('USER name: ' + str(data))
 
         finally:
             conn.close()
@@ -172,7 +171,7 @@ def search_user(username):
 def search_user_by_id(id):
     c, conn = sqlite_connect()
     data = None
-    if id and isinstance(id, str):
+    if id and isinstance(id, int):
         try:
             select_query = "SELECT * FROM users WHERE id LIKE '%s'" 
             c.execute(select_query % id)
@@ -180,7 +179,7 @@ def search_user_by_id(id):
         except sqlite3.Error as sqe:
             LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
             LOG.error('Query: ' + str(select_query))
-            LOG.error('USER name: ' + str(client_name))
+            LOG.error('USER name: ' + str(data))
 
         finally:
             conn.close()
