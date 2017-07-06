@@ -17,12 +17,20 @@ def odoo_connect(db):
         LOG.error('Odoo Server: ' + str(ODOO_SERVER))
         LOG.error('XML OBJECT: ' + str(XMLRPC_OBJECT))
 
-def odoo_insert(db, lead, uid):
+def odoo_insert(db, lead):
     try:
-        if uid is not None and uid:
-            models = xmlrpc.client.ServerProxy(XMLRPC_OBJECT.format(ODOO_SERVER))
-            id = models.execute_kw(db, uid, ADMIN_PASS, ODOO_TABLE, OPERATION_CREATE, [lead])
-            return 'Lead insertado con id' + str(id)
+        if db is not None and db and isinstance(db, str):
+            odoo = xmlrpc.client.ServerProxy(XMLRPC_COMMON.format(ODOO_SERVER))
+            uid = odoo.authenticate(db, ADMIN_USER, ADMIN_PASS, {})
+            if uid is not False and isinstance(uid, int):
+                models = xmlrpc.client.ServerProxy(XMLRPC_OBJECT.format(ODOO_SERVER))
+                print(lead)
+                id = models.execute_kw(db, uid, ADMIN_PASS, ODOO_TABLE, OPERATION_CREATE, [lead])
+                return 'Lead insertado con id' + str(id)
+            else:
+                LOG.error('El usuario no pudo ser autenticado')
+        else :
+            LOG.error("La base de datos no ha sido encontrada en Odoo")
     except Exception as e:
         LOG.error('Error al intentar insertar Lead en Odoo' + str(e))
 

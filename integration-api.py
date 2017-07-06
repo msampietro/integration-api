@@ -73,21 +73,17 @@ def insert_lead():
             if auth and auth == API_KEY:
                 database = get_database(page_name.lower())
                 odoo_json = transform_odoo_json(json)
-                uid = odoo_connect(database)
-                user_id = get_user_id(database, get_user(page_name.lower()), uid)
                 extra_values = list()
                 extra_values.append((TYPE, TYPE_VALUE))
-                extra_values.append((USER_ID, user_id))
                 append_values_json(extra_values, json)
-                odoo_insert(database, odoo_json, uid)
+                odoo_insert(database, odoo_json)
+            else:
+                abort(401)
         else:
             abort(401)
     except Exception as e:
         abort(400)
-
     return build_response('Success', 200)
-
-
 
 @app.route('/delete_client', methods=['POST'])
 @login_required
@@ -110,5 +106,5 @@ def load_user(id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=8000)
 

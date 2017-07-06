@@ -46,11 +46,27 @@ def transform_odoo_json(json):
     for key, values in json.copy().items():
         k = get_odoo_key(key)
         if k != None:
-            if k == key:
-                json[k] = json[key]
+            if k == "cod_tel":
+                if 'phone' in json:
+                    json['phone'] = values + json['phone']
+                    del json['cod_area_tel']
+                else:
+                    json['telefono'] = values + json['telefono']
+                    del json['cod_area_tel']
             else:
-                json[k] = json[key]
-                del json[key]
+                if k == 'cod_cel':
+                    if 'mobile' in json:
+                        json['mobile'] = values + json['mobile']
+                        del json['cod_area_cel']
+                    else:
+                        json['celular'] = values + json['celular']
+                        del json['cod_area_cel']
+                else:
+                    if k == key:
+                        json[k] = json[key]
+                    else:
+                        json[k] = json[key]
+                        del json[key]
         else:
             del json[key]
 

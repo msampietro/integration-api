@@ -10,5 +10,7 @@
   "telefono":"phone",
   "email":"email_from",
   "ciudad":"city",
-  "fax":"fax"
+  "fax":"fax",
+  "cod_area_tel" : "cod_tel",
+  "cod_area_cel" : "cod_cel"
 }
