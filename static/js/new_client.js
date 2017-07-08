@@ -106,11 +106,11 @@ $(document).ready(function(){
 
 
     $( "#logout" ).on('click',function() {
-        window.location.replace('/logout')
+        window.location.replace('/mad/logout')
 });
 
     $( "#change" ).on('click',function() {
-        window.location.replace('/change')
+        window.location.replace('/mad/change')
 });
 
 

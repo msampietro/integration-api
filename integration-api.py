@@ -27,7 +27,7 @@ def get_clients():
     clients = list_clients()
     return render_template('index.html', clientedit=clients)
 
-@app.route('/mad/', methods=['POST', 'GET'])
+@app.route('/mad', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET':
         if current_user.is_authenticated:
