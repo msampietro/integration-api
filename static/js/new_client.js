@@ -11,7 +11,7 @@ $(document).ready(function(){
 
     $.ajax({
         type : "POST",
-        url : "/new_client", // the endpoint,commonly same url // http method
+        url : "/mad/new_client", // the endpoint,commonly same url // http method
         data : {'empresa':$('#empresa').val(),
                 'db':$('#db').val()}, // data sent with the post request
         success : function(resp) {
@@ -45,7 +45,7 @@ $(document).ready(function(){
 
     $.ajax({
         type : "POST",
-        url : "/change", // the endpoint,commonly same url // http method
+        url : "/mad/change", // the endpoint,commonly same url // http method
         data : {'user_now':$('#user_now').val(),
                 'password_now':$('#password_now').val(),
                 'new_password':$('#new_password').val(),
@@ -81,7 +81,7 @@ $(document).ready(function(){
 
     $.ajax({
         type : "POST",
-        url : "/create", // the endpoint,commonly same url // http method
+        url : "/mad/create", // the endpoint,commonly same url // http method
         data : {'user_new':$('#user_new').val(),
                 'new_password_create':$('#new_password_create').val(),
                 'new_password2_create':$('#new_password2_create').val()}, // data sent with the post request
@@ -140,7 +140,7 @@ $(document).ready(function(){
 
      $.ajax({
         type : "POST",
-        url : "/update_client", // the endpoint,commonly same url // http method
+        url : "/mad/update_client", // the endpoint,commonly same url // http method
         data : {'empresa':empresa, 'db':db,'usuario_lead':usuario_lead, 'id':codigo}, // data sent with the post request
         success : function(resp) {
              $('#response').text(resp.details)
@@ -175,7 +175,7 @@ $(document).ready(function(){
 
      $.ajax({
         type : "POST",
-        url : "/delete_client", // the endpoint,commonly same url // http method
+        url : "/mad/delete_client", // the endpoint,commonly same url // http method
         data : {'id':codigo}, // data sent with the post request
         success : function(resp) {
             $('#response').text(resp.details)

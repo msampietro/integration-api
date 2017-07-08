@@ -21,13 +21,13 @@ login_manager.init_app(app)
 LOG.basicConfig(filename=LOG_FILE, level=LOG.ERROR)
 
 
-@app.route('/clients', methods=['GET'])
+@app.route('/mad/clients', methods=['GET'])
 @login_required
 def get_clients():
     clients = list_clients()
     return render_template('index.html', clientedit=clients)
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/mad/', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET':
         if current_user.is_authenticated:
@@ -44,13 +44,13 @@ def login():
                 return redirect(url_for('get_clients'))
         return render_template('login.html', message='Credenciales invalidas')
 
-@app.route('/logout', methods=['GET'])
+@app.route('/mad/logout', methods=['GET'])
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
 
-@app.route('/new_client', methods=['POST'])
+@app.route('/mad/new_client', methods=['POST'])
 @login_required
 def create_client():
     company = request.form.get(EMPRESA_KEY)
@@ -64,7 +64,7 @@ def create_client():
     return build_response('Hay argumentos faltantes o incorrectos en la peticion', 400)
 
 @csrf.exempt
-@app.route('/new_lead', methods=['POST'])
+@app.route('/mad/new_lead', methods=['POST'])
 def insert_lead():
     try:
         json = request.json
@@ -92,13 +92,13 @@ def insert_lead():
         abort(400)
     return build_response('Success', 200)
 
-@app.route('/delete_client', methods=['POST'])
+@app.route('/mad/delete_client', methods=['POST'])
 @login_required
 def delete_clients():
     id = request.form.get('id')
     return delete_client(id)
 
-@app.route('/create', methods=['POST'])
+@app.route('/mad/create', methods=['POST'])
 @login_required
 def create_user():
     username = request.form['user_new']
@@ -111,7 +111,7 @@ def create_user():
         return build_response('Error al crear usuario, las claves no son iguales o estan vacias', 400)
     return build_response('Error al crear usuario, ese usuario ya existe', 400)
 
-@app.route('/change', methods=['GET','POST'])
+@app.route('/mad/change', methods=['GET','POST'])
 @login_required
 def change_user():
     if request.method == 'GET':
@@ -130,7 +130,7 @@ def change_user():
             return build_response('Error al actualizar usuario, contraseña actual incorrecta', 400)
     return build_response('Error al actualizar usuario, no hay coincidencia en las claves',400)
 
-@app.route('/update_client', methods=['POST'])
+@app.route('/mad/update_client', methods=['POST'])
 @login_required
 def update_clients():
     empresa = request.form.get('empresa')
@@ -144,4 +144,4 @@ def load_user(id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5151)
+    app.run(host='0.0.0.0')
