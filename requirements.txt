@@ -1,0 +1,5 @@
+uwsgi
+Flask
+Flask-WTF
+Flask-Login
+WTForms
