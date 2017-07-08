@@ -1,6 +1,7 @@
 import sqlite3
 from application_properties import *
 from utils import validate_regex, build_response
+from application_constants import *
 import logging
 from clients_form import ClientForm, ClientList
 
@@ -17,21 +18,40 @@ def sqlite_connect():
         LOG.error('Database path: ' + SQLITE_PATH)
 
 
-def new_client(company, db, user_lead):
+def new_client(company, db):
     c, conn = sqlite_connect()
     try:
         if c and conn:
-            if isinstance(company, str) and validate_regex(db, DATABASE_REGEX) \
-                    and validate_regex(user_lead, EMAIL_REGEX):
-                client = (company, db, user_lead)
-                insert_query = 'INSERT INTO ' + CLIENTS_TABLE + ' VALUES (NULL, ?, ?, ?)'
+            if isinstance(company, str) and validate_regex(db, DATABASE_REGEX):
+                client = (company, db)
+                insert_query = 'INSERT INTO ' + CLIENTS_TABLE + ' VALUES (NULL, ?, ?)'
                 c.execute(insert_query, client)
                 conn.commit()
                 message = build_response('Cliente almacenado con exito!', 200)
             else:
-                message = build_response('Error en los datos, verificar formato de MAIL y BASE DE DATOS', 400)
+                message = build_response('Error en los datos, verificar formato de BASE DE DATOS', 400)
     except sqlite3.Error as sqe:
         message = build_response('Error al intentar almacenar el cliente, es posible que alguno de los datos especificados ya exista', 400)
+        LOG.error('Sqlite Error al insertar ' + str(sqe))
+        LOG.error('Parametros recibidos: ' + str(client))
+        LOG.error('Query: ' + str(insert_query))
+
+    finally:
+        conn.close()
+
+    return message
+
+def new_user(user, password):
+    c, conn = sqlite_connect()
+    try:
+        if c and conn:
+            client = (user, password)
+            insert_query = 'INSERT INTO ' + USERS_TABLE + ' VALUES (NULL, ?, ?)'
+            c.execute(insert_query, client)
+            conn.commit()
+            message = build_response('Usuario almacenado con exito!', 200)
+    except sqlite3.Error as sqe:
+        message = build_response('Error al intentar almacenar el usuario, es posible que alguno de los datos especificados ya exista', 400)
         LOG.error('Sqlite Error al insertar ' + str(sqe))
         LOG.error('Parametros recibidos: ' + str(client))
         LOG.error('Query: ' + str(insert_query))
@@ -94,7 +114,6 @@ def list_clients():
                 client.codigo = d[0]
                 client.empresa = d[1]
                 client.db = d[2]
-                client.usuario_lead = d[3]
                 clients.client_list.append_entry(client)
     except sqlite3.Error as sqe:
         LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
@@ -105,19 +124,18 @@ def list_clients():
 
     return clients
 
-def update_client(company, db, user_lead, id):
+def update_client(company, db, id):
     c, conn = sqlite_connect()
     try:
         if c and conn:
-            if isinstance(company, str) and validate_regex(db, DATABASE_REGEX) \
-                    and validate_regex(user_lead, EMAIL_REGEX):
-                client = (company, db, user_lead, id)
-                update_query = 'UPDATE ' + CLIENTS_TABLE + ' SET empresa=?,db=?,usuario_lead=? WHERE id=?'
+            if isinstance(company, str) and validate_regex(db, DATABASE_REGEX):
+                client = (company, db, id)
+                update_query = 'UPDATE ' + CLIENTS_TABLE + ' SET empresa=?,db=? WHERE id=?'
                 c.execute(update_query, client)
                 conn.commit()
                 message = build_response('Cliente actualizado con exito!', 200)
             else:
-                message = build_response('Error en los datos, verificar formato de MAIL y BASE DE DATOS', 400)
+                message = build_response('Error en los datos, verificar formato de BASE DE DATOS', 400)
     except sqlite3.Error as sqe:
         message = build_response('Error al intentar actualizar el cliente, es posible que alguno de los datos especificados ya exista', 400)
         LOG.error('Sqlite Error al actualizar ' + str(sqe))
@@ -128,6 +146,29 @@ def update_client(company, db, user_lead, id):
         conn.close()
 
     return message
+
+def update_user(user, new_password):
+    c, conn = sqlite_connect()
+    try:
+        if c and conn:
+            user = (new_password, user.username)
+            update_query = 'UPDATE ' + USERS_TABLE + ' SET password=? WHERE username=?'
+            c.execute(update_query, user)
+            conn.commit()
+            message = build_response('Usuario actualizado con exito!', 200)
+        else:
+            message = build_response('Error en los datos, verificar el usuario', 400)
+    except sqlite3.Error as sqe:
+        message = build_response('Error al intentar actualizar el cliente, es posible que alguno de los datos especificados ya exista', 400)
+        LOG.error('Sqlite Error al actualizar ' + str(sqe))
+        LOG.error('Parametros recibidos: ' + str(user))
+        LOG.error('Query: ' + str(update_query))
+
+    finally:
+        conn.close()
+
+    return message
+
 
 def delete_client(id):
     c, conn = sqlite_connect()
@@ -155,7 +196,7 @@ def search_user(username):
     data = None
     if username and isinstance(username, str):
         try:
-            select_query = "SELECT * FROM users WHERE username LIKE '%s'" 
+            select_query = "SELECT * FROM "+ USERS_TABLE +" WHERE username LIKE '%s'"
             c.execute(select_query % username)
             data = c.fetchone()
         except sqlite3.Error as sqe:
@@ -173,7 +214,7 @@ def search_user_by_id(id):
     data = None
     if id and isinstance(id, int):
         try:
-            select_query = "SELECT * FROM users WHERE id LIKE '%s'" 
+            select_query = "SELECT * FROM "+ USERS_TABLE +" WHERE id == '%s'"
             c.execute(select_query % id)
             data = c.fetchone()
         except sqlite3.Error as sqe:

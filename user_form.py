@@ -10,12 +10,15 @@ class User(UserMixin):
 
     def get_id(self):
         data = search_user_by_id(self.id)
-        return data[0]
+        if data is not None:
+            return data[0]
 
     def get(username):
         data = search_user(username)
-        return User(data[0], data[1], data[2])
+        if data is not None:
+            return User(data[0], data[1], data[2])
 
     def get_object(id):
         data = search_user_by_id(id)
-        return User(data[0], data[1], data[2])
+        if data is not None:
+            return User(data[0], data[1], data[2])
