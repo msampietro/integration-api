@@ -5,12 +5,12 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if os.name == 'nt':
     LOG_FILE = BASE_DIR + '\integration-api.log'
-    SQLITE_PATH = BASE_DIR + '\clients.db'
+    SQLITE_PATH = BASE_DIR + '\docker-volume\clients.db'
     MAPPINGS_FILE = BASE_DIR + '\odoo_mappings.json'
     COMPOUND_FILE = BASE_DIR + '\json_compound.json'
 else:
     LOG_FILE = BASE_DIR + '/integration-api.log'
-    SQLITE_PATH = BASE_DIR + '/clients.db'
+    SQLITE_PATH = BASE_DIR + '/docker-volume/clients.db'
     MAPPINGS_FILE = BASE_DIR + '/odoo_mappings.json'
     COMPOUND_FILE = BASE_DIR + '/json_compound.json'
 ODOO_SERVER = 'http://crm.madketing.com.ar'
