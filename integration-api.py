@@ -6,7 +6,7 @@ import logging as LOG
 from flask_wtf import CSRFProtect
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from sqlite_connector import new_client, list_clients, get_database, \
-   update_client, delete_client, update_user, new_user
+   update_client, delete_client, update_user, new_user, list_users, delete_registered_user
 from odoo_connector import odoo_insert
 from user_form import User
 
@@ -95,7 +95,7 @@ def insert_lead():
 @app.route('/mad/delete_client', methods=['POST'])
 @login_required
 def delete_clients():
-    id = request.form.get('id')
+    id = request.form.get(ID_KEY)
     return delete_client(id)
 
 @app.route('/mad/create', methods=['POST'])
@@ -115,7 +115,8 @@ def create_user():
 @login_required
 def change_user():
     if request.method == 'GET':
-        return render_template('change.html')
+        users = list_users()
+        return render_template('change.html', users=users)
     else:
         username = request.form['user_now']
         password = request.form['password_now']
@@ -133,10 +134,23 @@ def change_user():
 @app.route('/mad/update_client', methods=['POST'])
 @login_required
 def update_clients():
-    empresa = request.form.get('empresa')
-    db = request.form.get('db')
-    id = request.form.get('id')
+    empresa = request.form.get(EMPRESA_KEY)
+    db = request.form.get(DB_KEY)
+    id = request.form.get(ID_KEY)
     return update_client(empresa, db, id)
+
+@app.route('/mad/delete_user', methods=['POST'])
+@login_required
+def delete_user():
+    id = request.form.get(ID_KEY)
+    if id is not None and id:
+        id_int = int(id)
+        user = User.get_object(id_int)
+        if user.username == current_user.username:
+            return build_response('El usuario actual no puede ser eliminado', 400)
+        else:
+            return delete_registered_user(id)
+    return build_response('Error al intentar eliminar el usuario', 400)
 
 @login_manager.user_loader
 def load_user(id):

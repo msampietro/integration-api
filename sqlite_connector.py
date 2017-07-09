@@ -124,6 +124,21 @@ def list_clients():
 
     return clients
 
+def list_users():
+    c, conn = sqlite_connect()
+    try:
+        select_query = "SELECT * FROM " + USERS_TABLE
+        c.execute(select_query)
+        data = c.fetchall()
+    except sqlite3.Error as sqe:
+        LOG.error('Sqlite Error al intentar recuperar registros de la db: ' + str(sqe))
+        LOG.error('Query: ' + str(select_query))
+
+    finally:
+        conn.close()
+
+    return data
+
 def update_client(company, db, id):
     c, conn = sqlite_connect()
     try:
@@ -183,6 +198,27 @@ def delete_client(id):
                 message = build_response('Error en los datos, verificar formato de MAIL y BASE DE DATOS', 400)
     except sqlite3.Error as sqe:
         message = build_response('Error al intentar borrar el cliente', 400)
+        LOG.error('Sqlite Error al borrar ' + str(sqe))
+        LOG.error('Query: ' + str(delete_query))
+
+    finally:
+        conn.close()
+
+    return message
+
+def delete_registered_user(id):
+    c, conn = sqlite_connect()
+    try:
+        if c and conn:
+            if id is not None and id:
+                delete_query = 'DELETE FROM ' + USERS_TABLE + ' WHERE id=?'
+                c.execute(delete_query, id)
+                conn.commit()
+                message = build_response('Usuario eliminado con exito!', 200)
+            else:
+                message = build_response('Error al intentar eliminar usuario', 400)
+    except sqlite3.Error as sqe:
+        message = build_response('Error al intentar borrar el usuario de la base de datos', 400)
         LOG.error('Sqlite Error al borrar ' + str(sqe))
         LOG.error('Query: ' + str(delete_query))
 

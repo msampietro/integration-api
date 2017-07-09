@@ -113,6 +113,10 @@ $(document).ready(function(){
         window.location.replace('/mad/change')
 });
 
+     $( "#back" ).on('click',function() {
+        window.location.replace('/mad/clients')
+});
+
 
 
 });
@@ -192,6 +196,36 @@ $(document).ready(function(){
 });
 }
 
+
+  function eliminar_usuario(id) {
+
+      $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+
+
+     $.ajax({
+        type : "POST",
+        url : "/mad/delete_user", // the endpoint,commonly same url // http method
+        data : {'id':id}, // data sent with the post request
+        success : function(resp) {
+            $('#delete-response').text(resp.details)
+            if(resp.status==200){
+                 setTimeout(function(){ window.location.href = window.location.href; }, 2000);
+            }
+            else {
+                 setTimeout(function(){  window.location.href = window.location.href; }, 2000);
+            }
+    },
+        error : function(xhr,errmsg,err) {
+        $('#delete-response').text(err)
+}
+});
+}
 
 
 

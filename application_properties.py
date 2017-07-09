@@ -3,10 +3,16 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_FILE = BASE_DIR + '\integration-api.log'
-SQLITE_PATH = BASE_DIR + '\clients.db'
-MAPPINGS_FILE = BASE_DIR + '\odoo_mappings.json'
-COMPOUND_FILE = BASE_DIR + '\json_compound.json'
+if os.name == 'nt':
+    LOG_FILE = BASE_DIR + '\integration-api.log'
+    SQLITE_PATH = BASE_DIR + '\clients.db'
+    MAPPINGS_FILE = BASE_DIR + '\odoo_mappings.json'
+    COMPOUND_FILE = BASE_DIR + '\json_compound.json'
+else:
+    LOG_FILE = BASE_DIR + '/integration-api.log'
+    SQLITE_PATH = BASE_DIR + '/clients.db'
+    MAPPINGS_FILE = BASE_DIR + '/odoo_mappings.json'
+    COMPOUND_FILE = BASE_DIR + '/json_compound.json'
 ODOO_SERVER = 'http://crm.madketing.com.ar'
 ODOO_PORT = 8069
 ADMIN_USER = 'luciano@madketing.com.ar'
