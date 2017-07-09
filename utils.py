@@ -3,6 +3,7 @@ from flask import jsonify
 import logging
 import json as jsonlib
 from application_properties import *
+from application_constants import *
 
 LOG = logging.getLogger(__name__)
 
@@ -17,6 +18,16 @@ def validate_regex(text, expression):
         LOG.error('Expression: ' + str(expression) +' - Text: ' + str(text))
 
     return is_valid
+
+def match_regex(text, expression):
+    result = None
+    try:
+        result = re.findall(expression, text)[0]
+    except Exception as e:
+        LOG.error('Error durante la validacion del Regex: '+ str(e))
+        LOG.error('Expression: ' + str(expression) +' - Text: ' + str(text))
+
+    return result
 
 def build_response(message, code):
     if code == 400:
@@ -42,17 +53,30 @@ def build_response(message, code):
 
     return response
 
-def transform_odoo_json(json):
+def transform_odoo_json(json, file):
     for key, values in json.copy().items():
-        k = get_odoo_key(key)
+        k = get_odoo_key(key, file)
         if k != None:
             if k == key:
-                json[k] = json[key]
+                json[k] = str(json[key])
             else:
-                json[k] = json[key]
+                json[k] = str(json[key])
                 del json[key]
         else:
             del json[key]
+
+    return json
+
+def compound_json_values(json, file):
+    for key, values in json.copy().items():
+        k = get_odoo_key(key, file)
+        if k != None:
+            suffix = json[key]
+            if json[k] and json[k] is not None:
+                json[k] = suffix + str(json[k])
+                del json[key]
+            else:
+                del json[key]
 
     return json
 
@@ -63,8 +87,8 @@ def append_values_json(extra_values, json):
             json[v[0]] = value
     return json
 
-def get_odoo_key(formKey):
-    with open(MAPPINGS_FILE) as json_data:
+def get_odoo_key(formKey, file):
+    with open(file) as json_data:
         odoo_mapping = jsonlib.load(json_data)
 
     for key, values in odoo_mapping.items():

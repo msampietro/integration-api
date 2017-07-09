@@ -17,12 +17,15 @@ def odoo_connect(db):
         LOG.error('Odoo Server: ' + str(ODOO_SERVER))
         LOG.error('XML OBJECT: ' + str(XMLRPC_OBJECT))
 
-def odoo_insert(db, lead, uid):
+def odoo_insert(db, lead):
     try:
-        if uid is not None and uid:
+        uid = odoo_connect(db)
+        if uid is not False and isinstance(uid, int):
             models = xmlrpc.client.ServerProxy(XMLRPC_OBJECT.format(ODOO_SERVER))
             id = models.execute_kw(db, uid, ADMIN_PASS, ODOO_TABLE, OPERATION_CREATE, [lead])
             return 'Lead insertado con id' + str(id)
+        else:
+            LOG.error('El usuario no pudo ser autenticado')
     except Exception as e:
         LOG.error('Error al intentar insertar Lead en Odoo' + str(e))
 
@@ -34,6 +37,3 @@ def get_user_id(db, user_email, uid):
             return ids[0]
     except Exception as e:
         LOG.error('No pudo leerse el usuario de la base de datos de Odoo' + str(e))
-
-    
-

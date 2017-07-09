@@ -16,13 +16,19 @@
     <script>
         var csrf_token = "{{ csrf_token() }}"
     </script>
-
+                <link rel="stylesheet" href="http://crm.madketing.com.ar:8069/im_livechat/external_lib.css"/>
+            <script type="text/javascript" src="http://crm.madketing.com.ar:8069/im_livechat/external_lib.js"></script>
+            <script type="text/javascript" src="http://crm.madketing.com.ar:8069/im_livechat/loader/1"></script>
 
 
 </head>
 
 <body>
-    <div style="margin-top:1%;" class="container col-lg-4 table-bordered">
+<div class="col-lg-2 table-bordered">
+    <button name="submit" style='margin-top:1%;margin-left:1%;margin-bottom:2%;' class="btn btn-primary btn-sm col-lg-12" type="button" id="change">Usuarios</button>
+<button name="submit" style='margin-top:1%;margin-left:1%;margin-bottom:2%;' class="btn btn-danger btn-sm col-lg-12" type="button" id="logout">Salir</button>
+</div>
+    <div style="margin-top:1%;padding-left: 2%;padding-right: 2%;" class="container col-lg-4 table-bordered">
         <h5 style="text-align:center;margin-bottom:3%;margin-top:1%;">Modulo de Integracion de Clientes</h5>
         <form id="register_client" method="post" class="panel-body">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
@@ -32,39 +38,38 @@
             <input id='db' class="form-control" type="text" tabindex="2" required>
             <small id="helpDb" class="form-text text-muted">Recordar: Esta base de datos debe ser creada en el CRM</small>
             <small id="helpDb2" class="form-text text-muted">Formato estilo patente, Ejemplo: 000AAA</small>
-            <label style="margin-top:2%;">Email destino de los leads</label>
-            <input id='usuario_lead' class="form-control" type="email" tabindex="3" required>
             <tr></tr>
+            <div class="row">
             <button name="submit" style='margin-top:3%' class="btn btn-success col-lg-12" type="button" id="register-submit">Guardar</button>
-            <button name="submit" style='margin-top:3%' class="btn btn-warning col-lg-12" type="button" id="logout" href="/logout">Salir</button>
-            <strong><p style="text-align: center;color:#5a6e76;" id="response"></p></strong>
+                </div>
             <p id="space"></p>
         </form>
     </div>
 
+     <strong><p style="text-align: center;color:#5a6e76;" id="response"></p></strong>
+
+
     {% if clientedit %}
-    <div class="container">
+    <div class="col-lg-6 container">
         <table style="margin-top:5%;" class="table table-sm">
             <thead>
                 <tr>
-                    <th style="text-align: center;">Numero</th>
+                    <th></th>
                     <th style="text-align: center;">Empresa</th>
                     <th style="text-align: center;">Base de Datos</th>
-                    <th style="text-align: center;">Email destino de Leads</th>
-                    <th></th>
-                    <th></th>
+                    <th style="text-align: right;"> Selecciona una</th>
+                    <th style="text-align: left;">operacion</th>
                 </tr>
             </thead>
             <tbody>
 
                 {% for c in clientedit.client_list %}
                 <tr scope="row">
-                    <td>{{c.codigo(class="form-control", spellcheck="false")}}</td>
-                    <td>{{c.empresa (class="form-control", spellcheck="false")}}</td>
-                    <td>{{ c.db (class="form-control", spellcheck="false")}}</td>
-                    <td>{{ c.usuario_lead(class="form-control", spellcheck="false")}}</td>
-                    <td>{{ c.eliminar(onclick="eliminar(this.id)",class="form-control") }}</td>
-                    <td>{{ c.actualizar(onclick="actualizar(this.id)", class="form-control") }}</td>
+                    <td>{{c.codigo(class="form-control", spellcheck="false", type="hidden")}}</td>
+                    <td>{{c.empresa (class="form-control", spellcheck="false",style="text-align: center;")}}</td>
+                    <td>{{ c.db (class="form-control", spellcheck="false",style="text-align: center;")}}</td>
+                    <td>{{ c.eliminar(onclick="eliminar(this.id)",class="form-control",style="text-align: center;") }}</td>
+                    <td>{{ c.actualizar(onclick="actualizar(this.id)", class="form-control",style="text-align: center;") }}</td>
                 </tr>
                 {% endfor %}
 
@@ -72,7 +77,6 @@
         </table>
     </div>
     {% endif %}
-
 
 
 

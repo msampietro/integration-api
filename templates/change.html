@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Modulo de Integracion</title>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/new_client.js') }}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+    <script>
+        var csrf_token = "{{ csrf_token() }}"
+    </script>
+
+
+
+</head>
+
+<body>
+<div class="col-lg-1 table-bordered">
+<button name="submit" style='margin-top:1%; margin-left:1%;margin-bottom:2%;' class="btn btn-warning btn-sm col-lg-12" type="button" id="back">Volver</button>
+</div>
+<div class="row">
+    <div style="margin-top:4%;" class="container col-lg-4 table-bordered">
+        <h5 style="text-align:center;margin-bottom:3%;margin-top:1%;">Cambiar contraseña</h5>
+        <form id="change_user" method="post" class="panel-body">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <label>Usuario Actual</label>
+            <input id='user_now' class="form-control" type="text" tabindex="1" required autofocus>
+            <label>Contraseña Actual</label>
+            <input id='password_now' class="form-control" type="password" tabindex="1" required autofocus>
+            <label style="margin-top:2%;">Nueva Contraseña</label>
+            <input id='new_password' class="form-control" type="password" tabindex="1" required>
+            <label style="margin-top:2%;">Repetir Contraseña</label>
+            <input id='new_password2' class="form-control" type="password" tabindex="1" required>
+            <tr></tr>
+            <button name="submit" style='margin-top:3%' class="btn btn-primary col-lg-12" type="button" id="password-submit">Cambiar</button>
+            <strong><p style="text-align: center;color:#5a6e76;" id="password-response"></p></strong>
+        </form>
+    </div>
+
+    <div style="margin-top:4%;" class="container col-lg-4 table-bordered">
+        <h5 style="text-align:center;margin-top:8%;">Crear Usuario</h5>
+        <form id="register_client" method="post" class="panel-body">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <label>Nombre de Usuario</label>
+            <input id='user_new' class="form-control" type="text" tabindex="2" required autofocus>
+            <label style="margin-top:2%;">Contraseña</label>
+            <input id='new_password_create' class="form-control" type="password" tabindex="2" required>
+            <label style="margin-top:2%;">Repetir Contraseña</label>
+            <input id='new_password2_create' class="form-control" type="password" tabindex="2" required>
+            <tr></tr>
+            <button name="submit" style='margin-top:3%' class="btn btn-primary col-lg-12" type="button" id="create-submit">Crear</button>
+            <strong><p style="text-align: center;color:#5a6e76;" id="user-response"></p></strong>
+        </form>
+    </div>
+
+</div>
+
+<strong><p style="text-align: center;color:#5a6e76;" id="delete-response"></p></strong>
+
+ {% if users %}
+    <div class="col-lg-6 container">
+        <table style="margin-top:5%;" class="table table-sm">
+            <thead>
+                <tr>
+                    <th style="text-align: center;"></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for u in users %}
+                <tr scope="row">
+                    <td style="text-align: center;">{{u[1]}}</td>
+                    <td><button id="delete-user" class="form-control" onclick="eliminar_usuario('{{ u[0] }}')">Eliminar</button></td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</body>
+
+</html>
