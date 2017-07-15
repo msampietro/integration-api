@@ -22,7 +22,7 @@ def validate_regex(text, expression):
 def match_regex(text, expression):
     result = None
     try:
-        result = re.findall(expression, text)[0]
+        result = re.findall(expression, text)
     except Exception as e:
         LOG.error('Error durante la validacion del Regex: '+ str(e))
         LOG.error('Expression: ' + str(expression) +' - Text: ' + str(text))
@@ -85,6 +85,15 @@ def append_values_json(extra_values, json):
         value = v[1]
         if value is not None and value:
             json[v[0]] = value
+    return json
+
+def append_values(value, json):
+    if value is not None and value:
+        try:
+            if json[APPEND_FIELD] is not None:
+                json[APPEND_FIELD] = json[APPEND_FIELD] + APPEND_SEPARATOR + value
+        except KeyError:
+            json[APPEND_FIELD] = value
     return json
 
 def get_odoo_key(formKey, file):

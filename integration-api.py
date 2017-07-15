@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, abort, redirect, url_for
 from application_properties import *
 from application_constants import *
-from utils import build_response, append_values_json, transform_odoo_json, match_regex, compound_json_values
+from utils import build_response, append_values_json, transform_odoo_json, match_regex, compound_json_values, append_values
 import logging as LOG
 from flask_wtf import CSRFProtect
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -75,12 +75,16 @@ def insert_lead():
         if page_name is not None and titulo is not None and page_name and titulo:
             auth = request.headers[AUTHORIZATION]
             if auth and auth == API_KEY:
-                database = get_database(page_name.lower())
+                database = get_database(page_name[0].lower())
                 odoo_compound = compound_json_values(json, COMPOUND_FILE)
                 odoo_json = transform_odoo_json(odoo_compound, MAPPINGS_FILE)
                 extra_values = list()
                 extra_values.append((TYPE, TYPE_VALUE))
                 append_values_json(extra_values, json)
+                if len(page_name) > 1:
+                    del page_name[0]
+                    for v in page_name:
+                        append_values(v, odoo_json)
                 odoo_insert(database, odoo_json)
             else:
                 abort(401)
@@ -88,7 +92,7 @@ def insert_lead():
             LOG.ERROR("El page_name es invalido o falta el campo TITULO en el json")
             abort(401)
     except Exception as e:
-        LOG.ERROR("Exception al intentar insertar un lead", e)
+        LOG.error("Exception al intentar insertar un lead " + str(e))
         abort(400)
     return build_response('Success', 200)
 
