@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
 COPY nginx/flask.conf /etc/nginx/sites-available/
 COPY supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY integration-api /var/www/integration-api
-COPY crm.madketing.com.ar /etc/letsencrypt/live/crm.madketing.com.ar/
 
 RUN mkdir -p /var/log/nginx/integration-api /var/log/uwsgi/integration-api /var/log/supervisor \
     && rm /etc/nginx/sites-enabled/default \
