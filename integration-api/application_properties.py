@@ -13,10 +13,10 @@ else:
     SQLITE_PATH = BASE_DIR + '/docker-volume/clients.db'
     MAPPINGS_FILE = BASE_DIR + '/odoo_mappings.json'
     COMPOUND_FILE = BASE_DIR + '/json_compound.json'
-ODOO_SERVER = 'http://crm.madketing.com.ar'
+ODOO_SERVER = 'https://crm.madketing.com.ar'
 ODOO_PORT = 8069
-ADMIN_USER = 'luciano@madketing.com.ar'
-ADMIN_PASS =  '123456'
+ADMIN_USER = 'crm@madketing.com.ar'
+ADMIN_PASS =  'madketing1189'
 DATABASE_REGEX = '(?:[0-9]{3}[A-Z]{3})'
 EMAIL_REGEX = '(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)'
 URL_REGEX = '#/\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#iS'
