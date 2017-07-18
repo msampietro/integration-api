@@ -100,7 +100,10 @@ def insert_lead():
 @login_required
 def delete_clients():
     id = request.form.get(ID_KEY)
-    return delete_client(id)
+    if id is not None and id:
+        id_int = int(id)
+        return delete_client(id_int)
+    return build_response("El cliente seleccionado no pudo ser borrado",400)
 
 @app.route('/mad/create', methods=['POST'])
 @login_required

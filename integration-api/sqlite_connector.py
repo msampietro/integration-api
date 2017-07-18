@@ -190,8 +190,8 @@ def delete_client(id):
     try:
         if c and conn:
             if id is not None and id:
-                delete_query = 'DELETE FROM ' + CLIENTS_TABLE + ' WHERE id=?'
-                c.execute(delete_query, id)
+                delete_query = "DELETE FROM " + CLIENTS_TABLE + " WHERE id='%s'"
+                c.execute(delete_query % id)
                 conn.commit()
                 message = build_response('Cliente eliminado con exito!', 200)
             else:
@@ -211,8 +211,8 @@ def delete_registered_user(id):
     try:
         if c and conn:
             if id is not None and id:
-                delete_query = 'DELETE FROM ' + USERS_TABLE + ' WHERE id=?'
-                c.execute(delete_query, id)
+                delete_query = "DELETE FROM " + USERS_TABLE + " WHERE id='%s'"
+                c.execute(delete_query % id)
                 conn.commit()
                 message = build_response('Usuario eliminado con exito!', 200)
             else:
