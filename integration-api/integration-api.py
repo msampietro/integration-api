@@ -96,6 +96,42 @@ def insert_lead():
         abort(400)
     return build_response('Success', 200)
 
+@csrf.exempt
+@app.route('/mad/new_lead_tecnom', methods=['POST'])
+def insert_lead_tecnom():
+    try:
+        json = request.json
+        LOG.info("Nuevo lead recibido: ", json)
+        queryResults = json["queryResult"]
+        params = queryResults["parameters"]
+        titulo = params["titulo"]
+        page_name = params["page_name"]
+        page_name = match_regex(page_name, PAGE_NAME_REGEX)
+        if page_name is not None and titulo is not None and page_name and titulo:
+            #auth = request.headers[AUTHORIZATION]
+            #if auth and auth == API_KEY:
+            #database = get_database(page_name[0].lower())
+            #odoo_compound = compound_json_values(json, COMPOUND_FILE)
+            odoo_json = transform_odoo_json(params, MAPPINGS_FILE)
+            extra_values = list()
+            extra_values.append((TYPE, TYPE_VALUE))
+            append_values_json(extra_values, json)
+            if len(page_name) > 1:
+                del page_name[0]
+                for v in page_name:
+                    append_values(v, odoo_json)
+            #odoo_insert(database, odoo_json)
+            print(odoo_json)
+        #else:
+            #abort(401)
+        else:
+            LOG.ERROR("El page_name es invalido o falta el campo TITULO en el json")
+            abort(401)
+    except Exception as e:
+        LOG.error("Exception al intentar insertar un lead " + str(e))
+        abort(400)
+    return build_response('Success', 200)
+
 @app.route('/mad/delete_client', methods=['POST'])
 @login_required
 def delete_clients():
@@ -134,8 +170,8 @@ def change_user():
             if user.password == password:
                 if password1 == password2 and password and password2 and password1:
                     return update_user(user, password2)
-                return build_response('Especificar contraseña', 400)
-            return build_response('Error al actualizar usuario, contraseña actual incorrecta', 400)
+                return build_response('Especificar contrasenia', 400)
+            return build_response('Error al actualizar usuario, contrasenia actual incorrecta', 400)
     return build_response('Error al actualizar usuario, no hay coincidencia en las claves',400)
 
 @app.route('/mad/update_client', methods=['POST'])
@@ -165,4 +201,4 @@ def load_user(id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=4040)
